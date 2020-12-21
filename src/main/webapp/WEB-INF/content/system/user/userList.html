@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Mock管理系统</title>
+<link rel="icon" href="favicon.ico" type="image/ico">
+<meta name="keywords" content="Mock管理系统">
+<meta name="description" content="Mock管理系统">
+<meta name="author" content="yinqi">
+<link href="static/css/bootstrap.min.css"  th:href="@{/system/static/css/bootstrap.min.css}"  rel="stylesheet">
+<link href="static/css/materialdesignicons.min.css" th:href="@{/system/static/css/materialdesignicons.min.css}" rel="stylesheet">
+<link href="static/css/style.min.css" th:href="@{/system/static/css/style.min.css}" rel="stylesheet">
+<link href="static/css/table.css" th:href="@{/system/static/css/table.css}" rel="stylesheet">
+
+
+<!--时间选择插件-->
+<link rel="stylesheet" href="static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" th:href="@{/system/static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css}">
+<!--日期选择插件-->
+<link rel="stylesheet" href="static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css" th:href="@{/system/static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css}">
+<!-- switch控件 -->
+<link rel="stylesheet" href="static/js/bootstrap-switch/bootstrap-switch.min.css" th:href="@{/system/static/js/bootstrap-switch/bootstrap-switch.min.css}">
+</head>
+  
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    <aside class="lyear-layout-sidebar">
+       
+      <!-- logo -->
+      <div id="logo" class="sidebar-header">
+        <a href="../index.html"><img src="../static/images/mock.png" title="LightYear" alt="LightYear" /></a>
+      </div>
+      <div class="lyear-layout-sidebar-scroll">
+        
+        <nav class="sidebar-main">
+          <ul class="nav nav-drawer">
+            <li class="nav-item"> <a href="../index.html"><i class="mdi mdi-home"></i> 后台首页</a> </li>
+            <li class="nav-item nav-item-has-subnav">
+              <a href="javascript:void(0)"><i class="mdi mdi-palette"></i>Mock配置</a>
+              <ul class="nav nav-subnav">
+                <li> <a href="../url/mockList">mock列表</a> </li>
+                <li> <a href="../url/mockLog">mock请求日志</a> </li>
+              </ul>
+            </li> 
+            <li class="nav-item nav-item-has-subnav active open">
+              <a href="javascript:void(0)"><i class="mdi mdi-settings"></i>基础管理</a>
+              <ul class="nav nav-subnav">
+                <li class="active"> <a href="userList">用户管理</a> </li>  
+                <li> <a href="../category/categoryList">模块管理</a> </li>                
+              </ul>
+            </li>            
+          </ul>
+        </nav>
+      </div>
+      
+    </aside>
+    <!--End 左侧导航-->
+    
+    <!--头部信息-->
+    <header class="lyear-layout-header">
+      
+      <nav class="navbar navbar-default">
+        <div class="topbar">
+          
+          <div class="topbar-left">
+            <div class="lyear-aside-toggler">
+              <span class="lyear-toggler-bar"></span>
+              <span class="lyear-toggler-bar"></span>
+              <span class="lyear-toggler-bar"></span>
+            </div>
+            <span class="navbar-page-title"> 用户管理 - 用户列表 </span>
+          </div>
+          
+          <ul class="topbar-right">
+            <li class="dropdown dropdown-profile">
+              <a href="javascript:void(0)" data-toggle="dropdown">
+                <input id="userType" type="hidden" th:value="${session.userType}" /> 
+              	<input id="userId" type="hidden" th:value="${session.userId}" />             		
+                <span style="font-size:18px" th:text="${session.userName}"></span>
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li> <a  data-toggle="modal" data-target="#personalModal"  onclick="editPer();"><i class="mdi mdi-account"></i> 个人信息</a> </li>
+				<li> <a data-toggle="modal" data-target="#editPassWdModal" data-whatever="@mdo"><i class="mdi mdi-lock-outline"></i> 修改密码</a> </li>
+                <li class="divider"></li>
+                <li> 
+                 	<a  onclick="Loginout()" ><i class="mdi mdi-logout-variant"></i>退出登录</a>                
+                </li>
+              </ul>
+            </li>            
+          </ul>
+          
+        </div>
+      </nav>
+      
+    </header>
+    <!--End 头部信息-->
+    
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">     
+     
+     <div class="container-fluid">
+     	 <div class="row">
+     	 	 <div class="col-lg-12">
+	     	 	 	<div class="card">
+						<form class="form-inline">
+	     	 	 			<div class="card-toolbar clearfix">
+										<div class="form-group col-md-2">
+											<label class="control-label">登录名称：</label>
+											<input class="form-control" type="text" style="width:65%;" id="loginName"   value="" name="loginName" placeholder="请输入名称">
+										</div>
+										<div class="form-group col-md-2">
+											<label class="control-label">手机号码：</label>
+											<input class="form-control" type="text" style="width:65%;" id="phone"   value="" name="phone" placeholder="请输入手机号码">
+										</div>
+										<div class="form-group col-md-2">
+											<label class="control-label">用户状态：</label>
+											<select class="form-control" name="status" id="status" >
+					                            <option value="">所有</option>
+					                            <option value="0">正常</option>
+					                            <option value="1">停用</option>
+					                        </select>
+										</div>
+										<div class="form-group col-md-4">
+											<label class="control-label">创建时间 </label>
+											<input class="js-datepicker form-control" id="beginTime" name="beginTime" placeholder="开始时间"  value="" data-date-format="yyyy-mm-dd">
+                            				<span>-</span>
+                            				<input class="js-datepicker form-control" id="endTime" name="endTime" placeholder="结束时间"  value="" data-date-format="yyyy-mm-dd">							                  
+										</div>	 
+									
+									<div class="toolbar-btn-action">
+										<a class="btn btn-success m-r-5" onclick="userlist()"><i class="mdi mdi-search-web"></i> 搜索</a>
+										<a class="btn btn-secondary m-r-5" onclick="clearSearch()"><i class="mdi mdi-refresh"></i> 清空</a>
+									</div>
+							</div>
+						</form>
+	     	 	 		<div class="card-body">
+									<div class="table-responsive">
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th >登录名称</th>
+													<th>管理员</th>
+													<th>用户名称</th>
+													<th>手机</th>
+													<th>用户状态</th>
+													<th>最后登陆时间</th>
+													<th>操作</th>
+												</tr>
+											</thead>
+											<tbody id="group_one">												
+											</tbody>
+										</table>
+										<div id="count" class='col-md-4'></div>
+	     	 	 		 					<ul id="pages"></ul>
+									</div>
+						</div>	     	 	 									
+	     	 	 	</div>
+     	 	 </div>     	 	 
+     	 </div>
+     </div>
+
+		<footer class="home-footer">
+			<div style="text-align: center">
+				<span class="copy" style="color: red;">2020 &copy;Luojuwang</span>
+			</div>
+		</footer>
+			</main>
+    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel">
+	    <div class="modal-dialog" role="document">
+	        <form class="form-horizontal" action="#" method="post" onsubmit="return false;">
+	            <div class="modal-content">
+	                <!-- 弹出框的头部 -->
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                        <span aria-hidden="true"> &times; </span>
+	                    </button>
+	                    <h4 class="modal-title" id="editUserModalLabel">编辑用户</h4>
+	                </div>
+	                <!-- 弹出框的内容 -->
+	                <div class="modal-body">
+	                    <input class="form-control" type="hidden" id="hf-userId" name="hf-userId" value="">
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-loginName">登陆名称</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control" type="text" id="hf-loginName" name="hf-loginName" value="" readonly="readonly">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-userName">用户名称</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control" type="text" id="hf-userName" name="hf-userName" value="" placeholder="请输入...">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-email">邮箱</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control" type="text" id="hf-email" name="hf-email" value="" placeholder="请输入...">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-phone">手机</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control"  id="hf-phone" name="hf-phone"   placeholder="请输入..."/>	                            
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-sex">性别</label>
+	                        <div class="col-md-9">
+								<label class="radio-inline" for="example-inline-radio">
+			                        <input type="radio" id="hf-sex-radio" name="hf-sex-radio" value="0">
+			                        	男
+			                     </label>
+			                     <label class="radio-inline" for="example-inline-radio">
+			                       <input type="radio" id="hf-sex-radio" name="hf-sex-radio" value="1">
+			                        	女
+			                     </label>
+                        	</div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-status">用户状态</label>
+	                        <div class="col-md-9">
+	                            <label class="lyear-switch switch-solid switch-primary">
+		                            <input type="checkbox" id="hf-status" name="hf-status" value="" >
+		                            <span></span>
+	                            </label>                           
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-remark">备注</label>
+	                        <div class="col-md-9">
+	                            <textarea class="form-control"  maxlength="255" id="hf-remark"  name="hf-remark" style="height: 150px;resize: none;" placeholder="请输入...">
+	                            </textarea>
+	                        </div>
+	                    </div>
+	                </div>
+	                <!-- 弹出框的底部 -->
+	                <div class="modal-footer">
+	                    <div style="text-align:center">
+	                        <!-- 设置了data-dismiss="modal"属性，就可以关闭该弹出框 -->
+	                        <button type="button" class="btn btn-primary" onclick="editAction()"> 保存</button>
+	                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+	                    </div>
+	                </div>
+	            </div>
+	        </form>
+	    </div>
+	</div>
+	<!--个人中心-->
+	<div class="modal fade" id="personalModal" tabindex="-1" role="dialog" aria-labelledby="personalModalLabel">
+	    <div class="modal-dialog" role="document">
+	        <form class="form-horizontal" action="#" method="post" onsubmit="return false;">
+	            <div class="modal-content">
+	                <!-- 弹出框的头部 -->
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                        <span aria-hidden="true"> &times; </span>
+	                    </button>
+	                    <h4 class="modal-title" id="editUserModalLabel">个人信息</h4>
+	                </div>
+	                <!-- 弹出框的内容 -->
+	                <div class="modal-body">
+	                    <input class="form-control" type="hidden" id="hf-per-userId" name="hf-userId" value="">
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-per-loginName">登陆名称</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control" type="text" id="hf-per-loginName" name="hf-per-loginName" value="" readonly="readonly">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-per-userName">用户名称</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control" type="text" id="hf-per-userName" name="hf-per-userName" value="" placeholder="请输入...">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-per-email">邮箱</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control" type="text" id="hf-per-email" name="hf-per-email" value="" placeholder="请输入...">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-per-phone">手机</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control"  id="hf-per-phone" name="hf-per-phone"   placeholder="请输入..."/>	                            
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-per-sex">性别</label>
+	                        <div class="col-md-9">
+								<label class="radio-inline" for="example-inline-radio">
+			                        <input type="radio" id="hf-per-sex-radio" name="hf-per-sex-radio" value="0">
+			                        	男
+			                     </label>
+			                     <label class="radio-inline" for="example-inline-radio">
+			                       <input type="radio" id="hf-per-sex-radio" name="hf-per-sex-radio" value="1">
+			                        	女
+			                     </label>
+                        	</div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-per-remark">备注</label>
+	                        <div class="col-md-9">
+	                            <textarea class="form-control"  maxlength="255" id="hf-per-remark"  name="hf-per-remark" style="height: 150px;resize: none;" placeholder="请输入...">
+	                            </textarea>
+	                        </div>
+	                    </div>
+	                </div>
+	                <!-- 弹出框的底部 -->
+	                <div class="modal-footer">
+	                    <div style="text-align:center">
+	                        <!-- 设置了data-dismiss="modal"属性，就可以关闭该弹出框 -->
+	                        <button type="button" class="btn btn-primary" onclick="editPersonalAction()"> 保存</button>
+	                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+	                    </div>
+	                </div>
+	            </div>
+	        </form>
+	    </div>
+	</div>
+	<!--修改密码-->
+	<div class="modal fade" id="editPassWdModal" tabindex="-1" role="dialog" aria-labelledby="editPassWdModalLabel">
+	    <div class="modal-dialog" role="document">
+	        <form class="form-horizontal" action="#" method="post" onsubmit="return false;">
+	            <div class="modal-content">
+	                <!-- 弹出框的内容 -->
+	                <div class="modal-body">
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-old-pwd">旧密码</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control" type="text" id="hf-old-pwd" name="hf-old-pwd" value="" placeholder="请输入...">
+	                        </div>
+	                    </div>
+						<div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-new-pwd">新密码</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control" type="text" id="hf-new-pwd" name="hf-new-pwd" value="" placeholder="请输入...">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-confirm-pwd">确认密码</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control" type="text" id="hf-confirm-pwd" name="hf-confirm-pwd" value="" placeholder="请输入...">
+	                        </div>
+	                    </div>
+
+	                <!-- 弹出框的底部 -->
+	                <div class="modal-footer">
+	                    <div style="text-align:center">
+	                        <!-- 设置了data-dismiss="modal"属性，就可以关闭该弹出框 -->
+	                        <button type="button" class="btn btn-primary" onclick="editPWD()"> 保存</button>
+	                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+	                    </div>
+	                </div>
+	            </div>
+	           </div>
+	        </form>
+	    </div>
+	</div>           
+	</div>
+    <!--End 页面主要内容-->
+  </div>
+
+<script type="text/javascript" src="../static/js/jquery.min.js" th:href="@{/system/static/js/jquery.min.js}"></script>
+<script type="text/javascript" src="../static/js/bootstrap.min.js" th:href="@{/system/static/js/bootstrap.min.js}"></script>
+<script type="text/javascript" src="../static/js/perfect-scrollbar.min.js" th:href="@{/system/static/js/perfect-scrollbar.min.js}"></script>
+<script type="text/javascript" src="../static/js/main.min.js" th:href="@{/system/static/js/main.min.js}"></script>
+<script type="text/javascript" src="../static/js/mock/user.js" th:href="@{/system/static/js/mock/user.js}"></script>
+<script type="text/javascript" src="../static/js/bootstrap-paginator.js" th:href="@{/system/static/js/bootstrap-paginator.js}"></script>
+<script type="text/javascript" src="../static/js/mock/login.js" th:href="@{/system/static/js/mock/login.js}"></script>
+<script type="text/javascript" src="../static/js/mock/person.js" th:href="@{/system/static/js/mock/person.js}"></script>
+<!--时间选择插件-->
+<script src="../static/js/bootstrap-datetimepicker/moment.min.js" th:href="@{/system/static/js/bootstrap-datetimepicker/moment.min.js}"></script>
+<script src="../static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js" th:href="@{/system/static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js}"></script>
+<script src="../static/js/bootstrap-datetimepicker/locale/zh-cn.js" th:href="@{/system/static/js/bootstrap-datetimepicker/locale/zh-cn.js}"></script>
+<!--日期选择插件-->
+<script src="../static/js/bootstrap-datepicker/bootstrap-datepicker.min.js" th:href="@{/system/static/js/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+<script src="../static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js" th:href="@{/system/static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js}"></script>
+<script src="../static/js/bootstrap-switch/bootstrap-switch.min.js" th:href="@{/system/static/js/bootstrap-switch/bootstrap-switch.min.js}"></script>
+
+</body>
+<script type="text/javascript">
+$(window).load( function(){
+	initData("","","","","");	 
+} );
+function userlist() {
+	var loginName=$("#loginName").val().trim();
+	var phone=$("#phone").val().trim();
+	var status=$("#status").val();
+	var beginTime=$("#beginTime").val();
+	var endTime=$("#endTime").val();
+	initData(loginName,phone,status,beginTime,endTime);
+}
+function clearSearch() {
+	$("#loginName").val("");
+	$("#phone").val("");
+	$("#status").val("");
+	$("#beginTime").val("");
+	$("#endTime").val("");
+}
+$(function(){
+    //输入框的值改变时触发
+    $("#hf-status").on("input",function(e){
+    	var status=$("#hf-status").val();
+    	if(status == 0){
+    		$("#hf-status").val("1");
+    	}else{
+    		$("#hf-status").val("0");
+    	}        
+    });
+});
+
+</script>
+</html>

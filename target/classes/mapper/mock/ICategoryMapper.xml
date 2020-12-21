@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mock.dao.ICategoryDao">
+		<resultMap id="ICategoryMap" type="com.mock.entity.ICategoryEntity">  
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="createBy" column="create_by"/>
+		<result property="updateBy" column="update_by"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="remark" column="remark"/>		
+	</resultMap>
+	
+	<insert id="insertCategory">
+		INSERT INTO sys_category(name,remark,create_by,create_time) VALUES(#{name},#{remark},#{createBy},NOW())
+	</insert>
+
+	<update id="updateCategory">
+		update sys_category
+		<set>		
+		<if test="name != null">  
+	            name=#{name},
+	    </if>
+	    <if test="remark != null ">  
+	            remark=#{remark},
+	    </if>
+	    <if test="updateBy != null">  
+	            update_by=#{updateBy},
+	    </if>	          	              
+			update_time = NOW()
+		</set>
+		where id=#{id}
+	</update>
+	
+	<select id="selectCategory" parameterType="com.mock.entity.ICategoryEntity" resultMap="ICategoryMap">
+		select * from sys_category
+		<where>
+            <include refid="query_items_where"></include>
+        </where>		
+	</select>
+	<select id="selectCategoryById"  resultType="com.mock.entity.ICategoryEntity">
+		select * from sys_category where id=#{id}			
+	</select>
+	<sql id="query_items_where">
+        <if test="name != null and name !=''">  
+            and  name like  CONCAT('%',#{name},'%') 
+        </if>
+   	</sql>
+</mapper> 

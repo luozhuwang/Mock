@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mock.dao.IUrlDao">
+	<resultMap id="UrlMap" type="com.mock.entity.IUrlEntity">  
+		<result property="urlId" column="url_id"/>
+		<result property="categoryId" column="category_id"/>
+		<result property="url" column="url"/>		
+		<result property="name" column="name"/>
+		<result property="description" column="description"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="createBy" column="create_by"/>
+		<result property="updateBy" column="update_by"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="remark" column="remark"/>		
+	</resultMap>
+
+	<select id="selectMockUrlList"  parameterType="com.mock.entity.IUrlEntity" resultMap="UrlMap">
+		select * from mock_url
+		<where>
+            <include refid="query_items_where"></include>
+            and	del_flag = 0 
+        </where>
+		 order by create_time desc
+	</select>
+	
+	<select id="selectMockUrlById" resultType="com.mock.entity.IUrlEntity">
+		select * from mock_url
+		<where>
+            url_id =#{urlId}
+            and	del_flag = 0 
+        </where>
+	</select>
+	
+	<select id="selectMockUrlByUrl" resultType="com.mock.entity.IUrlEntity">
+		select * from mock_url
+		<where>
+            url =#{url}
+            and	del_flag = 0 
+        </where>
+	</select>
+	
+	<select id="isUniqueUrl" resultType="Integer">
+		select count(0) from mock_url
+		<where>
+            url=#{url}
+            and	del_flag = 0 
+        </where>
+	</select>
+	<insert id="insertMockUrl">
+		INSERT INTO mock_url (category_id,description, url, name,create_by, create_time ) VALUES 
+		(#{categoryId},#{description},#{url},#{name},#{createBy},NOW())
+	</insert>
+	
+	<update id="updateMockUrl" parameterType="com.mock.entity.IUrlEntity">
+		update mock_url
+		<set>		
+			<if test="description != null ">  
+	            description=#{description},
+	        </if>	        
+	        <if test="url != null">  
+	            url=#{url},
+	        </if> 
+	        <if test="updateBy != null">  
+	            update_by=#{updateBy},
+	        </if>
+	        <if test="name != null">  
+	            name=#{name},
+	        </if>
+	        <if test="categoryId != -1">  
+	            category_id=#{categoryId},
+	        </if>	          	              
+			update_time = NOW()
+		</set> 
+		where url_id=#{urlId} AND del_flag=0
+	</update>
+	
+	<delete id="deleteMockUrlById">
+		update  mock_url set del_flag = 1  WHERE url_id=#{urlId}
+	</delete>
+	
+	<sql id="query_items_where">
+        <if test="name != null and name !=''">  
+            and  name like  CONCAT('%',#{name},'%') 
+        </if> 
+        <if test="url != null and url !=''">  
+	          and  url like  CONCAT('%',#{url},'%') 
+	        </if> 
+		<if test="description != null and description !=''">  
+				 and  description  like  CONCAT('%',#{description},'%') 
+        </if> 
+        <if test="urlId != null and urlId !=''">  
+				 and  url_id = #{urlId}
+        </if>
+        <if test="categoryId != -1">  
+				 and  category_id = #{categoryId}
+        </if>      
+   </sql>
+</mapper> 

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mock.dao.ILogDao">
+	<resultMap id="MockLogMap" type="com.mock.entity.ILogEntity">  
+		<result property="logId" column="log_id"/>
+		<result property="requestUrl" column="request_url"/>
+		<result property="categoryId" column="category_id"/>
+		<result property="hitUrl" column="hit_url"/>
+		<result property="requestIp" column="request_ip"/>
+		<result property="requestMethod" column="request_method"/>
+		<result property="requestHeader" column="request_header" />
+		<result property="requestDetail" column="request_detail"/>
+		<result property="responseDetail" column="response_detail" />
+		<result property="responseHeader" column="response_header" />
+		<result property="delFlag" column="del_flag"/>
+		<result property="createBy" column="create_by"/>
+		<result property="count" column="count"/>
+	</resultMap>
+
+	<select id="selectMockLogList"  parameterType="com.mock.entity.ILogEntity" resultMap="MockLogMap">
+		select * from mock_log
+		<where>
+            <include refid="query_items_where"></include>
+            and	del_flag = 0 
+        </where>
+		 order by create_time desc
+	</select>
+	
+	<select id="selectMockLogById" resultType="com.mock.entity.ILogEntity">
+		select * from mock_log
+		<where>
+            log_id =#{logId}  and	del_flag = 0 
+        </where>
+	</select>
+	
+	<select id="selectMockLogListByDate" resultType="java.util.Map">
+		SELECT DATE_FORMAT( create_time, "%Y-%m-%d" ) AS date, COUNT(create_time) AS count FROM mock_log   				 
+		<where>
+       		<include refid="query_items_where"></include>
+        </where>
+        GROUP BY DATE_FORMAT( create_time, "%Y-%m-%d" )
+	</select>
+	
+	<select id="selectMockLogListByName" resultType="java.util.Map">
+		select a.`name`, b.count from mock_url a,
+		(
+		select  hit_url,count(hit_url) as count from mock_log 
+		<where>
+       		<include refid="query_items_where"></include>
+        </where>       
+		  GROUP BY hit_url
+		) as b where a.url=b.hit_url;		
+	</select>
+	
+	<insert id="insertMockLog">
+		INSERT INTO mock_log (request_ip,category_id,  hit_url,request_url, request_method, request_detail,  request_header, response_header,response_detail,create_time ) VALUES 
+		(#{requestIp},#{categoryId},#{hitUrl},#{requestUrl},#{requestMethod},#{requestDetail},#{requestHeader},#{responseHeader},#{responseDetail},NOW())		
+	</insert>
+	
+	
+	<sql id="query_items_where">
+        <if test="requestUrl != null and requestUrl !=''">  
+            and  request_url like  CONCAT('%',#{requestUrl},'%') 
+        </if>
+        <if test="hitUrl != null and hitUrl !=''">  
+            and  hit_url like  CONCAT('%',#{hitUrl},'%') 
+        </if>  
+        <if test="requestIp != null and requestIp !=''">  
+	          and  request_ip like  CONCAT('%',#{requestIp},'%') 
+	        </if> 
+		<if test="requestMethod != null and requestMethod !=''">  
+				 and  request_method  like  CONCAT('%',#{requestMethod},'%') 
+        </if> 
+        <if test="beginTime !='' and beginTime !=null  and endTime !=''  and endTime !=null">
+<!--         <if test="beginTime !='' and endTime !=''"> -->
+        	and	create_time between #{beginTime} and #{endTime}
+<!--     		create_time between DATE_FORMAT(#{beginTime},'%Y-%m-%d hh:mm:ss') and DATE_FORMAT(#{endTime},'%Y-%m-%d hh:mm:ss') -->
+    	</if>     
+   </sql>
+</mapper> 

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mock.dao.IUrlRespDao">
+	<resultMap id="UrlRespMap" type="com.mock.entity.IUrlEntity"> 
+		<result property="Id" column="id"/> 
+		<result property="urlId" column="url_id"/>
+		<result property="url" column="url"/>
+		<result property="name" column="name"/>
+		<result property="requestMethod" column="request_method"/>
+		<result property="paramType" column="param_type"/>
+		<result property="requestParam" column="request_param"/>
+		<result property="requestHeader" column="request_header" />
+		<result property="delay" column="delay" />
+		<result property="content" column="content" />
+		<result property="statusCode" column="status_code" />
+		<result property="responseHeader" column="response_header" />	
+		<result property="description" column="description"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="createBy" column="create_by"/>
+		<result property="updateBy" column="update_by"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+	</resultMap>
+	
+	<select id="selectMockResp" parameterType="com.mock.entity.IUrlEntity" resultMap="UrlRespMap">
+		select * from mock_response
+		<where>
+            url_id =#{urlId}
+            and	del_flag = 0 
+        </where>
+	</select>
+	
+	<select id="selectMockRespById" resultType="com.mock.entity.IUrlEntity" parameterType="com.mock.entity.IUrlEntity">
+		select * from mock_response
+		<where>
+            <include refid="query_items_where"></include>
+            and	del_flag = 0 
+        </where>
+		 order by create_time desc
+	</select>
+	
+	
+	<insert id="insertMockResp">
+		INSERT INTO mock_response (url_id, name,request_method,param_type,request_param,request_header,content,delay,status_code,response_header,description,create_by,  create_time ) VALUES 
+		(#{urlId},#{name},#{requestMethod},#{paramType},#{requestParam},#{requestHeader},#{content},#{delay},#{statusCode},#{responseHeader},#{description},#{createBy},NOW())
+	</insert>
+	
+	<update id="updateMockResp" parameterType="com.mock.entity.IUrlEntity">
+		update mock_response
+		<set>		
+			<if test="name != null ">  
+	            name=#{name},
+	        </if>
+	        <if test="requestMethod != null ">  
+	            request_method=#{requestMethod},
+	        </if>	        
+	        <if test="paramType != null">  
+	            param_type=#{paramType},
+	        </if>
+	        <if test="requestParam != null">  
+	            request_param=#{requestParam},
+	        </if>
+	        <if test="delay != null">  
+	            delay=#{delay},
+	        </if>
+	        <if test="requestHeader != null">  
+	            request_header=#{requestHeader},
+	        </if>
+	        <if test="content != null">  
+	            content=#{content},
+	        </if>
+	        <if test="statusCode != null">  
+	            status_code=#{statusCode},
+	        </if>
+	        <if test="responseHeader != null">  
+	            response_header=#{responseHeader},
+	        </if>
+	        <if test="description != null">  
+	            description=#{description},
+	        </if>
+	        <if test="updateBy != null">  
+	            update_by=#{updateBy},
+	        </if>	        	          	              
+			update_time = NOW()
+		</set> 
+		where id=#{id} AND del_flag=0
+	</update>
+	
+	<delete id="deleteMockRespById">
+		update  mock_response set del_flag = 1  WHERE id=#{id}
+	</delete>
+	
+	<sql id="query_items_where">
+		<if test="urlId != null and urlId !=''">  
+				 and  url_id = #{urlId}
+        </if> 
+		<if test="id != null and id !=''">  
+	          and  id =#{id}
+	    </if> 
+        <if test="name != null and name !=''">  
+            and  name like  CONCAT('%',#{name},'%') 
+        </if>
+        <if test="requestMethod != null and requestMethod !=''">  
+				 and  request_method = #{requestMethod}
+        </if>         
+		<if test="paramType != 0 ">  
+				 and  param_type  = #{paramType}
+        </if> 
+        <if test="requestHeader != null and requestHeader !=''">  
+				 and  request_header  = #{requestHeader}
+        </if>
+        <if test="requestParam != null and requestParam !=''">  
+				 and  request_param  = #{requestParam}
+        </if>            
+   </sql>	
+</mapper> 

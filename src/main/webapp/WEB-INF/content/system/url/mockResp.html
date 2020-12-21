@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<link href="static/css/bootstrap.min.css"  th:href="@{/system/static/css/bootstrap.min.css}"  rel="stylesheet">
+<link href="static/css/materialdesignicons.min.css" th:href="@{/system/static/css/materialdesignicons.min.css}" rel="stylesheet">
+<link href="static/css/style.min.css" th:href="@{/system/static/css/style.min.css}" rel="stylesheet">
+<link href="static/css/table.css" th:href="@{/system/static/css/table.css}" rel="stylesheet">
+<body>
+<div class="modal fade" id="responseModal" tabindex="-1" role="dialog"  aria-labelledby="responseModalLabel">
+    	<div class="modal-dialog modal-lg" role="document">
+                   <div class="modal-content" style="width:1200px" align="left">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="myLargeModalLabel"></h4>
+                        <input type="hidden" id="urlId" value="">
+	                    <input  type="hidden" id="mockName" value="">
+                      </div>
+                      <div class="modal-body"  style="height:750px">
+                      		<div class="table-responsive">
+                      		<div class="toolbar-btn-action">
+<!-- 										<a class="btn btn-primary m-r-5" href="add"><i class="mdi mdi-plus"></i> 新增</a> -->
+											<button type="button" class="btn btn-primary m-r-5" data-toggle="modal" data-target="#addRespModal" data-whatever="@mdo" onclick="cleanRespModel()"><i class="mdi mdi-plus"></i>新增响应</button>
+									</div>
+	     	 	 		 		<table class="table table-bordered" id="table-container">
+	     	 	 		 			<thead>
+				                      <tr>
+				                        <th>响应名称</th>
+				                        <th>请求方式</th>
+				                         <th>延迟时间(秒)</th>
+				                        <th>响应内容</th>
+<!-- 				                        <th style="width: 100px;">返回状态码</th> -->
+<!-- 				                        <th>响应内容</th> -->
+				                        <th>描述</th>
+				                        <th>创建时间</th>
+				                        <th>操作</th>
+				                      </tr>
+				                    </thead>
+				                    <tbody id="group_one">
+				                    </tbody>				                    
+	     	 	 		 		</table>
+	     	 	 		 		<div id="count" class='col-md-4'></div>
+	     	 	 		 		<ul id="pages"></ul>
+                      </div>
+                    </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                      </div>
+         	</div>
+         </div>
+</div>
+<div class="modal fade" id="addRespModal" tabindex="-1" role="dialog"  aria-labelledby="addRespModalLabel">
+	    <div class="modal-dialog" role="document">
+	        <form class="form-horizontal" >
+	            <div class="modal-content">
+	                <!-- 弹出框的头部 -->
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                        <span aria-hidden="true">
+	                            &times;
+	                        </span>
+	                    </button>	                    
+	                    <h4 class="modal-title" id="addRespModalLabel">新增响应(<span style="color:red">红色为必填项</span>)</h4>
+	                    
+	                </div>
+	                <!-- 弹出框的内容 -->
+	                <div class="modal-body">
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-resp-name" style="color:red">响应名称</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control" type="text" id="hf-resp-name" name="hf-resp-name" placeholder="请输入...">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-resp-method" style="color:red">请求方式</label>
+	                        <div class="col-md-9">
+			                      <select class="form-control" id=hf-resp-method name="hf-resp-method" style="width:90px;">
+			                        <option value="">请选择</option>
+			                        <option value="GET" >GET</option>
+			                        <option value="POST">POST</option>
+			                        <option value="DEL">DEL</option>
+			                        <option value="PUT">PUT</option>
+			                      </select>
+	                        </div>
+	                    </div>
+						<div class="form-group" >
+	                        <label class="col-md-2 control-label" for="hf-resp-header" >请求头</label>
+	                        <div class="col-md-9"  id="hf-resp-header">
+						        <ul class="nav nav-tabs" role="tablist">
+						          <li role="presentation" class="active"><a href="#None" aria-controls="None" role="tab" data-toggle="tab">None</a></li>
+						          <li role="presentation"><a href="#header" aria-controls="header" role="tab" data-toggle="tab">header</a></li>
+						        </ul>
+						        <div class="tab-content">
+						        	<div role="tabpanel" class="tab-pane fade in active" id="None"></div>
+						            <div role="tabpanel" class="tab-pane fade" id="header">
+										<div  class="col-md-2"  align="center">
+														<button type="button" class="btn btn-success btn-sm" onclick="addtable('hf-resp-header')">添加</button>								
+												   </div>
+												   <div style="width: 100%;">
+														<table class="table  table-bordered" id="para_table" >
+															<tr>
+																<th style="text-align:center" width="40%">Key</th>
+																<th style="text-align:center" width="40%">Value</th>
+																<th style="text-align:center" width="20%">操作</th>
+															</tr>
+														</table>
+													</div>
+									</div>						           
+						        </div>								
+	                        </div>	                        
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-resp-param" >body参数</label>
+	                        <div class="col-md-9" id="hf-resp-body">
+						        <ul class="nav nav-tabs" role="tablist">
+						          <li role="presentation" class="active"><a href="#NoneBody" aria-controls="NoneBody" role="tab" data-toggle="tab">None</a></li>
+						          <li role="presentation"><a href="#formData"  aria-controls="formData" role="tab" data-toggle="tab" >form-data</a></li>
+						          <li role="presentation"><a href="#json"  aria-controls="json" role="tab" data-toggle="tab">json</a></li>
+						          <li role="presentation"><a href="#raw" aria-controls="raw" role="tab" data-toggle="tab">raw</a></li>
+						        </ul>
+						        <div class="tab-content">
+						        	<div role="tabpanel" class="tab-pane fade in active" id="NoneBody"></div>
+						            <div role="tabpanel" class="tab-pane fade" id="formData">
+										<div  class="col-md-2"  align="center">
+														<button type="button" class="btn btn-success btn-sm" onclick="addtable('hf-resp-body')">添加</button>								
+												   </div>
+												   <div style="width: 100%;">
+														<table class="table  table-bordered" id="para_table" >
+															<tr>
+																<th style="text-align:center" width="40%">名称</th>
+																<th style="text-align:center" width="40%">实际值</th>
+																<th style="text-align:center" width="20%">操作</th>
+															</tr>
+														</table>
+													</div>
+									</div>
+									<div role="tabpanel" class="tab-pane fade" id="json">
+						            		<textarea class="form-control"  id="hf-resp-json" name="hf-resp-json" style="height: 150px;resize:vertical;" placeholder="请输入..."></textarea>
+						            </div>
+						            <div role="tabpanel" class="tab-pane fade" id="raw">
+						            		<textarea class="form-control"  id="hf-resp-raw" name="hf-resp-raw" style="height: 150px;resize:vertical;" placeholder="请输入..."></textarea>
+						            </div>
+						        </div>								
+	                        </div>	                        
+	                    </div>
+<!-- 	                    <div class="form-group"> -->
+<!-- 	                        <label class="col-md-2 control-label" for="hf-statusCode">返回状态码</label> -->
+<!-- 	                        <div class="col-md-9"> -->
+<!-- 	                            <input class="form-control" type="text" id="hf-statusCode" name="hf-statusCode" -->
+<!-- 	                            placeholder="请输入..."> -->
+<!-- 	                        </div> -->
+<!-- 	                    </div> -->
+						<div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-resp-delay" >是否延迟（秒）</label>
+	                        <div class="col-md-3" style="display:flex;">
+                          			<input type="checkbox" id="hf-is-delay" aria-label="..." >
+                          			&nbsp;&nbsp;&nbsp;
+			                        <input type="hidden" class="form-control" id="hf-delay"  aria-label="..." value="">                  			                        		                            
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-resp-content" style="color:red"> 响应内容</label>
+	                        <div class="col-md-9">
+	                            <textarea class="form-control"  id="hf-resp-content" name="hf-resp-content" style="height: 150px;resize:vertical;" placeholder="请输入...">
+	                            </textarea>
+	                        </div>
+	                    </div>	                    
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-resp-description">描述</label>
+	                        <div class="col-md-9">
+	                            <textarea class="form-control"  maxlength="255" id="hf-resp-description"
+	                            name="hf-resp-description" style="height: 150px;resize: vertical;" placeholder="请输入...">
+	                            </textarea>
+	                        </div>
+	                    </div>
+	                </div>
+
+	                <!-- 弹出框的底部 -->
+	                <div class="modal-footer">
+	                    <div style="text-align:center">
+	                        <!-- 设置了data-dismiss="modal"属性，就可以关闭该弹出框 -->
+	                        <button type="button" class="btn btn-primary" onclick="saveResp()"> 保存</button>
+	                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+	                    </div>
+	                </div>
+	                						
+	            </div>
+	        </form>
+	    </div>
+	</div> 
+<div class="modal fade" id="editRespModal" tabindex="-1" role="dialog"  aria-labelledby="editRespModalLabel">
+	    <div class="modal-dialog" role="document">
+	        <form class="form-horizontal" >
+	            <div class="modal-content">
+	                <!-- 弹出框的头部 -->
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                        <span aria-hidden="true">
+	                            &times;
+	                        </span>
+	                    </button>	                    
+	                    <h4 class="modal-title" id="editRespModalLabel">编辑响应(<label style="color:red">红色为必填项</label>)</h4>
+	                    
+	                </div>
+	                <!-- 弹出框的内容 -->
+	                <div class="modal-body">
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-edit-resp-name" style="color:red">响应名称</label>
+	                        <div class="col-md-9">
+	                            <input class="form-control" type="text" id="hf-edit-resp-name" name="hf-edit-resp-name"  readonly="readonly" placeholder="请输入...">
+	                            <input class="form-control" type="hidden" id="hf-edit-resp-id" name="hf-edit-resp-id" value="">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="edit-resp-method" style="color:red">请求方式</label>
+	                        <div class="col-md-9">
+			                      <select class="form-control" id="edit-resp-method" name="edit-resp-method"  style="width:90px;">
+			                        <option value="">请选择</option>
+			                        <option value="POST">POST</option>
+			                        <option value="GET">GET</option>
+			                        <option value="DEL">DEL</option>
+			                        <option value="PUT">PUT</option>
+			                      </select>
+	                        </div>
+	                    </div>
+						<div class="form-group" >
+	                        <label class="col-md-2 control-label" for="hf-edit-resp-header" >请求头</label>
+	                        <div class="col-md-9"  id="hf-edit-resp-header">
+						        <ul class="nav nav-tabs" role="tablist">
+						          <li role="presentation" class="active"><a href="#edit-None" aria-controls="None" role="tab" data-toggle="tab">None</a></li>
+						          <li role="presentation"><a href="#edit-header" aria-controls="header" role="tab" data-toggle="tab">header</a></li>
+						        </ul>
+						        <div class="tab-content">
+						        	<div role="tabpanel" class="tab-pane fade in active" id="edit-None"></div>
+						            <div role="tabpanel" class="tab-pane fade" id="edit-header">
+										<div  class="col-md-2"  align="center">
+														<button type="button" class="btn btn-success btn-sm" onclick="addtable('hf-edit-resp-header')">添加</button>								
+												   </div>
+												   <div style="width: 100%;">
+														<table class="table  table-bordered" id="para_table" >
+															<tr>
+																<th style="text-align:center" width="40%">Key</th>
+																<th style="text-align:center" width="40%">Value</th>
+																<th style="text-align:center" width="20%">操作</th>
+															</tr>
+														</table>
+													</div>
+									</div>						           
+						        </div>								
+	                        </div>	                        
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-edit-resp-body" >body参数</label>
+	                        <div class="col-md-9" id="hf-edit-resp-body">
+						        <ul class="nav nav-tabs" role="tablist">
+						          <li role="presentation" class="active"><a href="#edit-NoneBody" aria-controls="NoneBody" role="tab" data-toggle="tab">None</a></li>
+						          <li role="presentation"><a href="#edit-formData" aria-controls="formData" role="tab" data-toggle="tab" >form-data</a></li>
+						          <li role="presentation"><a href="#edit-json" aria-controls="json" role="tab" data-toggle="tab">json</a></li>
+						          <li role="presentation"><a href="#edit-raw" aria-controls="raw" role="tab" data-toggle="tab">raw</a></li>
+						        </ul>
+						        <div class="tab-content">
+						        	<div role="tabpanel" class="tab-pane fade in active" id="edit-NoneBody"></div>
+						            <div role="tabpanel" class="tab-pane fade" id="edit-formData">
+										<div  class="col-md-2"  align="center">
+														<button type="button" class="btn btn-success btn-sm" onclick="addtable('hf-edit-resp-body')">添加</button>								
+												   </div>
+												   <div style="width: 100%;">
+														<table class="table  table-bordered" id="para_table" >
+															<tr>
+																<th style="text-align:center" width="40%">名称</th>
+																<th style="text-align:center" width="40%">实际值</th>
+																<th style="text-align:center" width="20%">操作</th>
+															</tr>
+														</table>
+													</div>
+									</div>
+									<div role="tabpanel" class="tab-pane fade" id="edit-json">
+						            		<textarea class="form-control"  id="hf-edit-resp-json" name="hf-edit-resp-json" style="height: 150px;resize:vertical;" placeholder="请输入..."></textarea>
+						            </div>
+						            <div role="tabpanel" class="tab-pane fade" id="edit-raw">
+						            		<textarea class="form-control"  id="hf-edit-resp-raw" name="hf-edit-resp-raw" style="height: 150px;resize:vertical;" placeholder="请输入..."></textarea>
+						            </div>
+						        </div>								
+	                        </div>	                        
+	                    </div>
+<!-- 	                    <div class="form-group"> -->
+<!-- 	                        <label class="col-md-2 control-label" for="hf-statusCode">返回状态码</label> -->
+<!-- 	                        <div class="col-md-9"> -->
+<!-- 	                            <input class="form-control" type="text" id="hf-statusCode" name="hf-statusCode" -->
+<!-- 	                            placeholder="请输入..."> -->
+<!-- 	                        </div> -->
+<!-- 	                    </div> -->
+						<div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-edit-resp-delay" >是否延迟（秒）</label>
+	                        <div class="col-md-3" style="display:flex;">
+                          			<input type="checkbox" id="hf-edit-is-delay" aria-label="..." >
+                          			&nbsp;&nbsp;&nbsp;
+			                        <input type="hidden" class="form-control" id="hf-edit-delay"  aria-label="..." value="">                  			                        		                            
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-edit-resp-content" style="color:red"> 响应内容</label>
+	                        <div class="col-md-9">
+	                            <textarea class="form-control"  id="hf-edit-resp-content" name="hf-edit-resp-content" style="height: 150px;resize:vertical;" placeholder="请输入...">
+	                            </textarea>
+	                        </div>
+	                    </div>	                    
+	                    <div class="form-group">
+	                        <label class="col-md-2 control-label" for="hf-edit-resp-description">描述</label>
+	                        <div class="col-md-9">
+	                            <textarea class="form-control"  maxlength="255" id="hf-edit-resp-description"
+	                            name="hf-edit-resp-description" style="height: 150px;resize: vertical;" placeholder="请输入...">
+	                            </textarea>
+	                        </div>
+	                    </div>
+	                </div>
+
+	                <!-- 弹出框的底部 -->
+	                <div class="modal-footer">
+	                    <div style="text-align:center">
+	                        <!-- 设置了data-dismiss="modal"属性，就可以关闭该弹出框 -->
+	                        <button type="button" class="btn btn-primary" onclick="editRespAction()"> 保存</button>
+	                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+	                    </div>
+	                </div>
+	                						
+	            </div>
+	        </form>
+	    </div>
+</div> 
+
+<script type="text/javascript" src="../static/js/mock/binding.js" th:href="@{/system/static/js/mock/binding.js}"></script>
+<script type="text/javascript" src="../static/js/mock/mockresponse.js" th:href="@{/system/static/js/mock/mockresponse.js}"></script>
+<script type="text/javascript" src="../static/js/mock/tab.js" th:href="@{/static/system/js/mock/tab.js}"></script>
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

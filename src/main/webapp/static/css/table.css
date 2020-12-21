@@ -1,0 +1,24 @@
+table{
+    min-width: 100%;
+    table-layout:fixed
+}
+th{
+    min-width: 30px;
+    max-width: 500px;
+}
+td{
+    min-width: 30px;
+    max-width: 500px;
+    text-overflow: ellipsis;
+    moz-text-overflow: ellipsis;
+    overflow: hidden;  
+    white-space: nowrap;  
+    text-align: left  
+    
+}
+form input{
+	height: 36px;
+}
+form select{
+	height: 36px;
+}

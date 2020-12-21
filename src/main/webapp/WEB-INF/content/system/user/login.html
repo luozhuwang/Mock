@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Mock在线平台">
+<meta name="keywords" content="常用代码,jquery特效,网页模板,文档教程">
+<title>Mock在线平台</title>
+<!-- Favicons -->
+<link rel="icon" href="favicon.ico">
+<link href="static/css/loginStyle.css" th:href="@{/system/static/css/loginStyle.css}" rel="stylesheet">
+<script type="text/javascript" src="static/js/mock/login.js" th:href="@{/system/static/js/mock/login.js}"></script>
+
+</head>
+
+<body>
+<div class="container">
+  <form class="signUp">
+    <h3>注册</h3>
+    <p style="color:red;font-size:20px">登陆名为登陆帐号</p>
+    <input id="signup-loginName" type="text" placeholder="登陆名"  autocomplete='off' />
+    <input id="signup-userName" type="text" placeholder="用户名称"  />
+    <input id="signup-password" type="password" placeholder="密码"  />
+    <button class="form-btn sx log-in" id="toLogin" type="button" >去登录</button>
+    <button class="form-btn dx" type="button" id="regist" onclick="registSys()">立即注册</button>
+  </form>
+  <form class="signIn">
+    <h3>登录</h3>
+    <input id="signin-loginName" type="text" placeholder="登陆名" autocomplete='off'  />
+    <input id="signin-password" type="password" placeholder="密码"  />
+    <button class="form-btn sx back" id="toRegist" type="button">返回</button>
+    <button class="form-btn dx" id="login" type="button" onclick="loginSys()">立即登录</button>
+  </form>
+</div>
+<footer class="home-footer">
+  <div>
+    <div>
+      <span class="copy"  style="color:black">2020 &copy; Luojuwang</span>
+    </div>
+    
+  </div>
+</footer>
+
+<script type="text/javascript" src="static/js/jquery.min.js" th:href="@{/system/static/js/jquery.min.js}"></script>
+<script type="text/javascript">
+//回车触发登陆
+document.onkeydown = function (e) {
+    var theEvent = window.event || e;
+    var code = theEvent.keyCode || theEvent.which;
+    if (code == 13) {
+        $("#login").click();
+    }
+} 
+$(".log-in").click(function(){
+    $(".signIn").addClass("active-dx");
+    $(".signUp").addClass("inactive-sx");
+    $(".signUp").removeClass("active-sx");
+    $(".signIn").removeClass("inactive-dx");
+});
+
+$(".back").click(function(){
+    $(".signUp").addClass("active-sx");
+    $(".signIn").addClass("inactive-dx");
+    $(".signIn").removeClass("active-dx");
+    $(".signUp").removeClass("inactive-sx");
+});
+</script>
+</body>
+</html>

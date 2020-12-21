@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/task
+    	http://www.springframework.org/schema/task/spring-task-3.2.xsd
+        ">
+		<!--初始化  SpringContextUtils-->
+		<bean class="com.mock.tool.SpringContextUtils" lazy-init="false"/>		
+		<bean id="testFilter" class="com.mock.filter.MockFilter" />
+		<bean id="MockFilterHandler" class="com.mock.filter.MockFilterHandler" />
+	 
+	<!-- 扫描Controller所在的包 -->
+       <context:component-scan base-package="com.mock.controller"/>
+       
+       <!-- 注解驱动 -->
+       <mvc:annotation-driven></mvc:annotation-driven>
+        
+        <!-- 视图解析器：简化在Controller类编写的视图路径 -->
+        <!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+            前缀
+            <property name="prefix" value="/WEB-INF/pages/"/>
+            后缀
+            <property name="suffix" value=".jsp"/>
+        </bean> -->
+               
+     <mvc:resources location="/static/" mapping="/system/static/**" /> 
+           <!--采用前端模板工具thymeleaf-->
+    <bean id="templateResolver" class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">
+        <property name="prefix" value="/WEB-INF/content/" />
+        <property name="suffix" value=".html" />
+<!--         <property name="templateMode" value="HTML" /> -->
+        <property name="cacheable" value="false" />
+        <property name="characterEncoding" value="UTF-8"/>
+    </bean>
+
+    <bean id="templateEngine"
+          class="org.thymeleaf.spring4.SpringTemplateEngine">
+        <property name="templateResolver" ref="templateResolver" />
+
+    </bean>
+
+    <bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+        <property name="templateEngine" ref="templateEngine" />
+        <property name="characterEncoding" value="UTF-8"/>
+    </bean>       
+				<!-- 开户登陆拦截器 ，需要注意代码中url的判断-->
+	<mvc:interceptors>  
+	    <mvc:interceptor>  
+	    <!--进行拦截：/**表示拦截所有controller  -->
+	        <mvc:mapping path="/**" />			
+	        <bean class="com.mock.filter.SessionInterceptor"/>  
+	    </mvc:interceptor>  
+	</mvc:interceptors> 
+  
+</beans>

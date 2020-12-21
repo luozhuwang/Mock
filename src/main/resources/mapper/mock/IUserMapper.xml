@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mock.dao.IUserDao">
+	<resultMap id="IUserMap" type="com.mock.entity.IUserEntity">  
+		<result property="userId" column="user_id"/>
+		<result property="loginName" column="login_name"/>
+		<result property="userName" column="user_name"/>
+		<result property="userType" column="user_type"/>
+		<result property="email" column="email" />
+		<result property="phone" column="phone"/>
+		<result property="sex" column="sex" />
+		<result property="password" column="password" />		
+		<result property="status" column="status"/>
+		<result property="loginIp" column="login_ip" />
+		<result property="loginDate" column="login_date" />		
+		<result property="delFlag" column="del_flag"/>
+		<result property="createBy" column="create_by"/>
+		<result property="updateBy" column="update_by"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="remark" column="remark"/>
+	
+	</resultMap>
+
+	<select id="selectUserList"  parameterType="com.mock.entity.IUserEntity" resultMap="IUserMap">
+		select * from sys_user
+		<where>
+            <include refid="query_items_where"></include>
+            and	del_flag = 0 
+        </where>
+		 order by create_time desc
+	</select>
+	
+	<select id="selectUserById" resultType="com.mock.entity.IUserEntity">
+		select * from sys_user
+		<where>
+            user_id =#{userId}  and	del_flag = 0 
+        </where>
+	</select>
+	
+	<update id="resetUserPwd" parameterType="String">
+		update sys_user set password=#{password},update_by=#{updateBy},update_time=NOW()
+		<where>
+            user_id =#{userId} 
+        </where> 
+	</update>
+	
+	<update id="updateUser" parameterType="com.mock.entity.IUserEntity">
+		update sys_user 
+		<set>		
+			<if test="userName != null ">  
+	            user_name=#{userName},
+	        </if>
+	        <if test="email != null ">  
+	            email=#{email},
+	        </if>
+	        <if test="phone != null ">  
+	            phone=#{phone},
+	        </if>
+	        <if test="sex != null">  
+	            sex=#{sex},
+	        </if>
+	        <if test="status != null">  
+	            status=#{status},
+	        </if>
+	        <if test="loginIp != null">  
+	            login_ip=#{loginIp},
+	        </if>
+	        <if test="loginDate != null">  
+	            login_date=#{loginDate},
+	        </if> 
+	        <if test="updateBy != null">  
+	            update_by=#{updateBy},
+	        </if>
+	        <if test="remark != null">  
+	            remark=#{remark},
+	        </if>          	              
+			update_time = NOW()
+		</set> 
+		where user_id =#{userId} AND del_flag=0
+	</update>
+	
+	<insert id="register">
+		INSERT INTO sys_user (login_name,user_name,email,phone,sex,password,create_by,create_time,remark) VALUES 
+		(#{loginName},#{userName},#{email},#{phone},#{sex},#{password},#{createBy},NOW(),remark)		
+	</insert>
+	
+	<select id="checkLoginName" resultType="Integer">
+		select count(0) from sys_user where login_name=#{loginName}
+	</select>
+	
+	<update id="delUserById">
+		update sys_user set del_flag=1,update_by=#{updateBy}
+		<where>
+            user_id =#{userId} 
+        </where> 
+	</update>
+	
+	<sql id="query_items_where">
+        <if test="loginName != null and loginName !=''">  
+            and  login_name = #{loginName}
+        </if> 
+        <if test="phone != null and phone !=''">  
+	          and  phone like  CONCAT('%',#{phone},'%') 
+	        </if> 
+		<if test="status != null ">  
+				 and  status  =  #{status}
+        </if> 
+        <if test="beginTime !='' and beginTime !=null  and endTime !=''  and endTime !=null">
+        	and	create_time between #{beginTime} and #{endTime}
+    	</if>     
+   </sql>
+</mapper> 
