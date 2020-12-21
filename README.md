@@ -20,6 +20,7 @@ http://127.0.0.1:8080/Mock/test-path/1
 2.登陆名为登陆帐号
 
 ![image](https://github.com/luozhuwang/Mock/blob/master/src/main/webapp/static/images/1.png)
+
 1.2登陆
 用户锁定状态不允许登陆，需要管理员恢复
 
