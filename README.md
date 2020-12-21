@@ -1,7 +1,6 @@
 # Mock
 Mock管理平台
 
-
 访问Mock后台登陆页面
 http://127.0.0.1:8080/Mock/system/login
 
@@ -9,7 +8,7 @@ http://127.0.0.1:8080/Mock/system/login
 http://127.0.0.1:8080/Mock/test-path/1
 
 初始化SQL参考：目录中mock.sql文件，初始化admin/a123456
-功能模块参考：Mock管理平台.doc# Mock
+
 
 文档介绍
 为了解决第三方系统的依赖以及本地搭建服务，前台和后台的依赖，提高开发和测试效率，通过使用Mock数据接口，可在只开发了UI的情况下，无须后台服务可以进行产品的演示。灵活配置URL请求、参数、响应、是否延迟，跟据不同模块来区分，使用过滤器对系统URL和mock-URL进行区分，统计时间段接口请求数量以及时间段接口请求占比。
@@ -18,7 +17,7 @@ http://127.0.0.1:8080/Mock/test-path/1
 1.1注册
 1.【登陆名】唯一，不允许重复注册
 2.登陆名为登陆帐号
- 
+![image](https://github.com/luozhuwang/Mock/blob/master/src/main/webapp/static/images/%E7%99%BB%E9%99%86.png)
 1.2登陆
 用户锁定状态不允许登陆，需要管理员恢复
  
