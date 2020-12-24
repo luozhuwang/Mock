@@ -1,3 +1,31 @@
+$(window).load( function(){
+	var isParam=window.location.search;
+	var hitUrl="";
+	if(isParam!=""){		
+		hitUrl=getUrlParam("hitUrl");
+	}
+	initData("",hitUrl,"","","","");
+	methodList();
+} );
+
+function mockLog() {
+	var requestUrl=$("#requestUrl").val().trim();
+	var hitUrl="";
+	var requestIp=$("#requestIp").val().trim();
+	var requestMethod=$('#requestMethod option:selected').val();
+	var beginTime=$("#beginTime").val();
+	var endTime=$("#endTime").val();
+	initData(requestUrl,hitUrl,requestIp,requestMethod,beginTime,endTime);
+}
+
+function clearLog() {
+	var requestUrl=$("#requestUrl").val("");
+	var requestIp=$("#requestIp").val("");
+	var requestMethod=$("#requestMethod").val("");
+	var beginTime=$("#beginTime").val("");
+	var endTime=$("#endTime").val("");
+}
+
 function cleanData(){
 	$("#viewModal input#hf-requestUrl").val("");
 	$("#viewModal input#hf-hitUrl").val("");
@@ -9,6 +37,28 @@ function cleanData(){
 	$("#viewModal textarea#hf-responseDetail").html("");
 	$("#viewModal textarea#hf-responseDetail").attr("title","");
 	$("#viewModal input#hf-createTime").val("");
+}
+
+function methodList(){
+	var div="";
+	$.ajax({  
+        type : "post",  
+        url : "/Mock/system/basic/method", 
+        data:"{\"associateId\": \"1\"}",
+        dataType: "json", 
+        contentType : "application/json;charset=UTF-8",
+        cache: false,
+        async: false ,
+        success : function(result) {        	
+        	var Method=$("#requestMethod");        	
+        	console.log(result);        	
+        	var jsonlenth=result.data.length;
+        	for (var i = 0; i <jsonlenth; i++){
+        		div+="<option value="+result.data[i].value+" >"+result.data[i].value+"</option>";
+        	}
+        	Method.append(div);
+        }
+	});
 }
 
 function strToJson(str) {

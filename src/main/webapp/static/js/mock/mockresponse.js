@@ -3,7 +3,9 @@ $("#responseModal").modal({
 	   backdrop: "static",
 	   show:false
 });	
-
+$(window).load( function(){
+	methodList();
+} );
 
 function cleanRespModel(){
 	$("#addRespModal").attr("style","background-color:rgb(0,0,0,0.3)");
@@ -183,6 +185,29 @@ function responselist(name,urlId){
 	});
 }
 
+function methodList(){
+	var div="";
+	$.ajax({  
+        type : "post",  
+        url : "/Mock/system/basic/method", 
+        data:"{\"associateId\": \"1\"}",
+        dataType: "json", 
+        contentType : "application/json;charset=UTF-8",
+        cache: false,
+        async: false ,
+        success : function(result) {        	
+        	var addMethod=$("#addRespModal #hf-resp-method");
+        	var editMethod=$("#editRespModal #edit-resp-method");
+        	console.log(result);        	
+        	var jsonlenth=result.data.length;
+        	for (var i = 0; i <jsonlenth; i++){
+        		div+="<option value="+result.data[i].value+" >"+result.data[i].value+"</option>";
+        	}
+        	addMethod.append(div);
+        	editMethod.append(div);
+        }
+	});
+}
 
 function saveResp() {
 	var urlId=$("#responseModal input#urlId").val();
@@ -221,7 +246,11 @@ function saveResp() {
 	
 	var isDlay=$("#addRespModal #hf-is-delay").prop("checked");
 	if(isDlay){
-		delay=$("#addRespModal input#hf-delay").val();	
+		delay=$("#addRespModal input#hf-delay").val();
+		if(delay==""){
+			alert("延迟时间不能为空");
+			return ;
+		}
 	}
 	
 	
@@ -366,6 +395,10 @@ function editRespAction(){
 	var isDlay=$("#editRespModal #hf-edit-is-delay").prop("checked");
 	if(isDlay){
 		delay=$("#editRespModal input#hf-edit-delay").val();	
+		if(delay==""){
+			alert("延迟时间不能为空");
+			return ;
+		}
 	}
 	
 	var method=$("#editRespModal #edit-resp-method").val();
