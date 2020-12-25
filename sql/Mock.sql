@@ -26,7 +26,7 @@ CREATE TABLE `sys_user` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 
-INSERT INTO `Mock`.`sys_user`( `login_name`, `user_name`, `user_type`, `email`, `phone`, `sex`, `password`, `status`, `del_flag`, `login_ip`, `login_date`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES ( 'admin', 'admin', 1, NULL, NULL, 1, '4c590c75bd7d9836e1c960ae0ed2fe7c', 0, 0, '192.168.101.13', '2020-12-18 18:31:10', '0', '2020-10-22 15:11:05', '0', '2020-12-18 18:31:08', NULL);
+INSERT INTO  `sys_user`( `login_name`, `user_name`, `user_type`, `email`, `phone`, `sex`, `password`, `status`, `del_flag`, `login_ip`, `login_date`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES ( 'admin', 'admin', 1, NULL, NULL, 1, '4c590c75bd7d9836e1c960ae0ed2fe7c', 0, 0, '192.168.101.13', '2020-12-18 18:31:10', '0', '2020-10-22 15:11:05', '0', '2020-12-18 18:31:08', NULL);
 
 CREATE TABLE `sys_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
@@ -41,7 +41,7 @@ CREATE TABLE `sys_category` (
   KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='模块表';
 
-INSERT INTO `Mock`.`sys_category`( `name`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES ( '默认模块', '默认模块', NULL, '2020-12-16 10:07:25', 4, '2020-12-16 15:45:27');
+INSERT INTO  `sys_category`( `name`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES ( '默认模块', '默认模块', NULL, '2020-12-16 10:07:25', 4, '2020-12-16 15:45:27');
 
 
 CREATE TABLE `mock_url` (
@@ -100,3 +100,18 @@ CREATE TABLE `mock_log` (
   PRIMARY KEY (`log_id`),
   KEY `request_url` (`request_url`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='mock记录表';
+
+CREATE TABLE `dict_data` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `associateId` int(255) DEFAULT NULL COMMENT '关联ID',
+  `value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '值',
+  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='基础数据字典';
+
+INSERT INTO  `dict_data`(`id`, `associateId`, `value`, `remark`) VALUES (1, 1, 'GET', NULL);
+INSERT INTO  `dict_data`(`id`, `associateId`, `value`, `remark`) VALUES (2, 1, 'POST', NULL);
+INSERT INTO  `dict_data`(`id`, `associateId`, `value`, `remark`) VALUES (3, 1, 'PUT', NULL);
+INSERT INTO  `dict_data`(`id`, `associateId`, `value`, `remark`) VALUES (4, 1, 'DEL', NULL);
+
+
