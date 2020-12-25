@@ -3,9 +3,7 @@ $("#responseModal").modal({
 	   backdrop: "static",
 	   show:false
 });	
-$(window).load( function(){
-	methodList();
-} );
+
 
 function cleanRespModel(){
 	$("#addRespModal").attr("style","background-color:rgb(0,0,0,0.3)");
