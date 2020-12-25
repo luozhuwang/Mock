@@ -205,7 +205,10 @@ function methodList(){
         	}
         	addMethod.append(div);
         	editMethod.append(div);
-        }
+        },error:function(result){			 
+			alert("获取【请求方式】失败");
+			 console.log(result);
+		} 
 	});
 }
 

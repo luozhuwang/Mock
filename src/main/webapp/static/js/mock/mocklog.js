@@ -57,7 +57,10 @@ function methodList(){
         		div+="<option value="+result.data[i].value+" >"+result.data[i].value+"</option>";
         	}
         	Method.append(div);
-        }
+        },error:function(result){			 
+			alert("获取【请求方式】失败");
+			 console.log(result);
+		} 
 	});
 }
 

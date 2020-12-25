@@ -116,9 +116,6 @@
 												<label class="control-label">请求方式： </label>
 												<select class="form-control" name="requestMethod" id="requestMethod" >
 						                            <option value="">所有</option>
-						                            <option value="GET">GET</option>
-						                            <option value="POST">POST</option>
-						                            <option value="PUT">PUT</option>
 						                        </select>
 											</div>
 											<div class="form-group col-md-4">
@@ -374,31 +371,31 @@
 <script src="../static/js/daterangepicker/daterang.js" th:href="@{/system/static/js/daterangepicker/daterang.js}"></script>
 </body>
 <script type="text/javascript">
-$(window).load( function(){
-	var isParam=window.location.search;
-	var hitUrl="";
-	if(isParam!=""){		
-		hitUrl=getUrlParam("hitUrl");
-	}
-	initData("",hitUrl,"","","","");
-} );
-function mockLog() {
-	var requestUrl=$("#requestUrl").val().trim();
-	var hitUrl="";
-	var requestIp=$("#requestIp").val().trim();
-	var requestMethod=$('#requestMethod option:selected').val();
-	var beginTime=$("#beginTime").val();
-	var endTime=$("#endTime").val();
-	initData(requestUrl,hitUrl,requestIp,requestMethod,beginTime,endTime);
-}
+// $(window).load( function(){
+// 	var isParam=window.location.search;
+// 	var hitUrl="";
+// 	if(isParam!=""){		
+// 		hitUrl=getUrlParam("hitUrl");
+// 	}
+// 	initData("",hitUrl,"","","","");
+// } );
+// function mockLog() {
+// 	var requestUrl=$("#requestUrl").val().trim();
+// 	var hitUrl="";
+// 	var requestIp=$("#requestIp").val().trim();
+// 	var requestMethod=$('#requestMethod option:selected').val();
+// 	var beginTime=$("#beginTime").val();
+// 	var endTime=$("#endTime").val();
+// 	initData(requestUrl,hitUrl,requestIp,requestMethod,beginTime,endTime);
+// }
 
-function clearLog() {
-	var requestUrl=$("#requestUrl").val("");
-	var requestIp=$("#requestIp").val("");
-	var requestMethod=$("#requestMethod").val("");
-	var beginTime=$("#beginTime").val("");
-	var endTime=$("#endTime").val("");
-}
+// function clearLog() {
+// 	var requestUrl=$("#requestUrl").val("");
+// 	var requestIp=$("#requestIp").val("");
+// 	var requestMethod=$("#requestMethod").val("");
+// 	var beginTime=$("#beginTime").val("");
+// 	var endTime=$("#endTime").val("");
+// }
 </script>
 
 </html>

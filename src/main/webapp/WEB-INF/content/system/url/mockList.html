@@ -418,11 +418,13 @@ function mocklist() {
 }
 function clearModel(){
 	$("#addModal input#hf-name").val("");
+	$("#addModal select#hf-category").val("1");
 	$("#addModal input#hf-url").val("");
 	$("#addModal textarea#hf-description").val("");
 }
 function cleareditModel(){
 	$("#editModal input#hf-name").val("");
+	$("#editModal select#hf-edit-category").val("1");	
 	$("#editModal input#hf-url").val("");	
 	$("#editModal textarea#hf-description").val("");
 }

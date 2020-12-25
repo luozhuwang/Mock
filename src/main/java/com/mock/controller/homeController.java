@@ -73,31 +73,7 @@ public class homeController {
     	ResponeBase response=iUserService.register(iUser);
     	return response;
 	}
-//表单同步请求，需要参数中带ModelMap map
-//	@RequestMapping(value="/login")
-//	public String login(HttpServletRequest request,ModelMap map) {
-//		IUserEntity iUser=new IUserEntity();
-//		String ip=RecordIP.getIpAddress(request);
-//		log.info("登陆页面:"+ip);
-//		map.put("iUser", iUser);
-//		return "/system/user/login";
-//	}
-	
-//	@RequestMapping(value="/loginAction",method = RequestMethod.POST)
-//	public String loginAction( IUserEntity iUser,HttpSession session) {
-//		ResponeBase response= iUserService.userLogin(iUser);
-//		IUserEntity iUser2=(IUserEntity) response.getData();
-//		String message=response.getMsg();
-//		if(message.equals("success")){				
-//			session.setAttribute("loginName", iUser2.getLoginName());	
-//			iUser2.setLoginIp(RecordIP.getIpAddress(request));
-//			iUser2.setLoginDate(DateFormat.DateToString(new Date()));
-//			iUserService.updateUser(iUser2);
-//			return "redirect:/system/index";
-//		}else {			
-//			return "redirect:/system/login";
-//		}
-//	}
+
 	
 	@RequestMapping("/outLogin")
 	public String Longinout(HttpSession session){

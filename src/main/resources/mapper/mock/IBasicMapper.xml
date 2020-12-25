@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mock.dao.IBasicDao">
+	<resultMap id="BasicDataMap" type="com.mock.entity.BasicDataEntity">  
+		<result property="id" column="id"/>
+		<result property="associateId" column="associateId"/>
+		<result property="value" column="value"/>
+		<result property="remark" column="remark"/>		
+	</resultMap>
+
+	<select id="selectBasicData"  parameterType="com.mock.entity.BasicDataEntity" resultMap="BasicDataMap">
+		select * from dict_data
+		<where>
+            <include refid="query_items_where"></include>
+        </where>	
+	</select>
+	
+
+	<sql id="query_items_where">
+        <if test="associateId !=-1">  
+            and  associateId=#{associateId}
+        </if>
+        <if test="value != null and value !=''">  
+            and  value=#{value}
+        </if>  
+           
+   </sql>
+</mapper> 
