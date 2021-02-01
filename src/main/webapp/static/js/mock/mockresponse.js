@@ -4,7 +4,6 @@ $("#responseModal").modal({
 	   show:false
 });	
 
-
 function cleanRespModel(){
 	$("#addRespModal").attr("style","background-color:rgb(0,0,0,0.3)");
 	$("#addRespModal input#hf-resp-name").val("");
@@ -60,6 +59,8 @@ function cleanEditRespModel(){
 }
 
 function responselist(name,urlId){
+	//获取请求方式
+	methodList();
 	var element = $("#responseModal #pages");
 	var pageSize=10;
 	var total=0
@@ -81,9 +82,9 @@ function responselist(name,urlId){
         	$("#responseModal input#urlId").val(urlId);
         	$("#responseModal input#mockName").val(name);
         	$("#responseModal h4#myLargeModalLabel").html("【"+name+"】响应列表");
-        	console.log(result);
+//        	console.log(result);
         	var json = eval(result.data); //数组   
-        	console.log(json);
+//        	console.log(json);
 	       	if(json==null){  
 	       		div+="<tr><td colspan='7' style='text-align:center'>无</td></tr>"        		
 	       	}else{
@@ -143,9 +144,9 @@ function responselist(name,urlId){
                 	        	$("#responseModal input#urlId").val(urlId);
                 	        	$("#responseModal input#mockName").val(name);
                 	        	$("#responseModal h4#myLargeModalLabel").html("【"+name+"】响应列表");
-                	        	console.log(result);
+//                	        	console.log(result);
                 	        	var json = eval(result.data); //数组   
-                	        	console.log(json);
+//                	        	console.log(json);
                 		       	if(json==null){  
                 		       		div+="<tr><td colspan='7' style='text-align:center'>无</td></tr>"        		
                 		       	}else{
@@ -185,6 +186,7 @@ function responselist(name,urlId){
 
 function methodList(){
 	var div="";
+	$("select#hf-resp-method").children().not(':first').remove();
 	$.ajax({  
         type : "post",  
         url : "/Mock/system/basic/method", 
@@ -196,7 +198,7 @@ function methodList(){
         success : function(result) {        	
         	var addMethod=$("#addRespModal #hf-resp-method");
         	var editMethod=$("#editRespModal #edit-resp-method");
-        	console.log(result);        	
+//        	console.log(result,addMethod,editMethod);        	
         	var jsonlenth=result.data.length;
         	for (var i = 0; i <jsonlenth; i++){
         		div+="<option value="+result.data[i].value+" >"+result.data[i].value+"</option>";
